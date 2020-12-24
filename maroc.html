@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <link href="assets/img/favicon.png" rel="icon">
+  <title>Risques Climatiques au Maroc</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="assets/vendor/venobox/venobox.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="leaflet.css" />
+  <script src="leaflet.js"></script>
+  <style>
+      #map {
+          width: 100%;
+          height: 90vh;
+          z-index: 0;
+          
+      }
+      .infoZD {
+          padding: 6px 8px;
+          font: 14px/16px Arial, Helvetica, sans-serif;
+          background: white;
+          background: rgba(255,255,255,0.9);
+          box-shadow: 0 0 15px rgba(0,0,0,0.5);
+          border-radius: 5px;
+      }
+      .infoZD h6 {
+          margin: 0 0 5px;
+          color: #000;
+      }
+      .infoSH {
+          padding: 6px 8px;
+          font: 14px/16px Arial, Helvetica, sans-serif;
+          background: white;
+          background: rgba(255,255,255,0.9);
+          box-shadow: 0 0 15px rgba(0,0,0,0.5);
+          border-radius: 5px;
+      }
+      .infoSH h6 {
+          margin: 0 0 5px;
+          color: #000;
+      }
+      .infoRS {
+          padding: 6px 8px;
+          font: 14px/16px Arial, Helvetica, sans-serif;
+          background: white;
+          background: rgba(255,255,255,0.9);
+          box-shadow: 0 0 15px rgba(0,0,0,0.5);
+          border-radius: 5px;
+      }
+      .infoRS h6 {
+          margin: 0 0 5px;
+          color: #000;
+      }
+      .infoRI {
+          padding: 6px 8px;
+          font: 14px/16px Arial, Helvetica, sans-serif;
+          background: white;
+          background: rgba(255,255,255,0.9);
+          box-shadow: 0 0 15px rgba(0,0,0,0.5);
+          border-radius: 5px;
+      }
+      .infoRI h6 {
+          margin: 0 0 5px;
+          color: #000;
+      }
+      .infoVI {
+          padding: 6px 8px;
+          font: 14px/16px Arial, Helvetica, sans-serif;
+          background: white;
+          background: rgba(255,255,255,0.9);
+          box-shadow: 0 0 15px rgba(0,0,0,0.5);
+          border-radius: 5px;
+      }
+      .infoVI h6 {
+          margin: 0 0 5px;
+          color: #000;
+      }
+      .legendZD {
+          line-height: 18px;
+          color: #000;
+      }
+  
+      .legendZD i {
+           width: 18px;
+          height: 18px;
+          float: left;
+          margin-right: 8px;
+          opacity: 0.7;
+      }
+      .legendSH {
+          line-height: 18px;
+          color: #000;
+      }
+  
+      .legendSH i {
+           width: 18px;
+          height: 18px;
+          float: left;
+          margin-right: 8px;
+          opacity: 0.7;
+      }
+      .legendRS {
+          line-height: 18px;
+          color: #000;
+      }
+  
+      .legendRS i {
+           width: 18px;
+          height: 18px;
+          float: left;
+          margin-right: 8px;
+          opacity: 0.7;
+      }
+      .legendRI {
+          line-height: 18px;
+          color: #000;
+      }
+  
+      .legendRI i {
+           width: 18px;
+          height: 18px;
+          float: left;
+          margin-right: 8px;
+          opacity: 0.7;
+      }
+  </style>	
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" style="z-index: 5;">
+    <div class="container d-flex">
+      <div class="logo mr-auto">
+        <h1 class="text-light"><a href="index.html"><span>Risques Climatiques au Maroc</span></a></h1>
+      </div>
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li class="drop-down"><a href="">Cartes 3D</a>
+                <ul>
+                  <li class=""><a href="./map1/map1.html">Pluviométrie</a></li>
+                  <li class=""><a href="./map2/map2.html">Sécheresse</a></li>
+                </ul>
+            </li>
+            <li class="drop-down"><a href="">Changer de region</a>
+                <ul>
+                  <li class="active"><a href="#">Maroc</a></li>
+                  <li><a href="AN.html">Afrique du Nord</a></li>
+                </ul>
+            </li>
+            
+        </ul>
+      </nav><!-- .nav-menu -->
+    </div>
+  </header><!-- End Header -->
+
+  <div id='map'></div>
+<script src="ZonesDeserti.geojson" type="text/javascript"></script>
+<script src="Risques_Climatiques_Maroc.geojson" type="text/javascript"></script>
+<script src="Ville_Maroc.geojson" type="text/javascript"></script>
+<script type="text/javascript">
+	var map = L.map('map').setView([28.912030, -9.604092], 5);
+	
+	// get color depending on 
+	function getColorZD(t) {
+		return t == "1" ? '#b10026' :
+		       t == "2" ? '#e31a1c' :
+		       t == "3" ? '#fc4e2a' :
+		       t == "4" ? '#fd8d3c' :
+		       t == "5" ? '#feb24c' :
+		       t == "6" ? '#fed976' :
+		       t == "7" ? '#ffeda0' :
+		                            '#ffffcc';
+	}
+	function MonstyleZD(feature) {
+		return {
+			weight: 2,
+			opacity: 1,
+			color: 'black',
+			dashArray: '3',
+			fillOpacity: 0.9,
+			fillColor: getColorZD(feature.properties.tab_Feui_7)
+		};
+	}
+    // get color depending on 
+	function getColorSH(c) {
+		return c > 4 ? '#a50f15' :
+		       c > 3 ? '#de2d26' :
+		       c > 2 ? '#fb6a4a' :
+		       c > 1 ? '#fcae91' :
+                                     '#fee5d9';
+	}
+
+	function MonstyleSH(feature) {
+		return {
+			weight: 2,
+			opacity: 1,
+			color: 'black',
+			dashArray: '3',
+			fillOpacity: 0.9,
+			fillColor: getColorSH(feature.properties.Jt_WaterSt)
+		};
+	}
+	 // get color depending on 
+	function getColorRS(c) {
+		return c > 0.80 ? '#993404' :
+		       c > 0.60 ? '#d95f0e' :
+		       c > 0.40 ? '#fe9929' :
+		       c > 0.20 ? '#fed98e' :
+                                     '#ffffd4';
+	}
+
+	function MonstyleRS(feature) {
+		return {
+			weight: 2,
+			opacity: 1,
+			color: 'black',
+			dashArray: '3',
+			fillOpacity: 0.9,
+			fillColor: getColorRS(feature.properties.Jt_Drought)
+		};
+	}
+	 // get color depending on 
+	function getColorRI(c) {
+		return c > 4 ? '#810f7c' :
+		       c > 3 ? '#8856a7' :
+		       c > 2 ? '#8c96c6' :
+		       c > 1 ? '#b3cde3' :
+                                     '#edf8fb';
+	}
+
+	function MonstyleRI(feature) {
+		return {
+			weight: 2,
+			opacity: 1,
+			color: 'black',
+			dashArray: '3',
+			fillOpacity: 0.9,
+			fillColor: getColorRI(feature.properties.Jt_FloodRi)
+		};
+	}
+	function highlightFeatureZD(e) {
+	    var layerZD = e.target;
+
+	    layerZD.setStyle({
+	        weight: 5,
+	        color: '#666',
+	        dashArray: '',
+	        fillOpacity: 0.9
+	    });
+
+	    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+	        layerZD.bringToFront();
+	    }
+	        infoZD.update(layerZD.feature.properties);
+
+	}
+    function highlightFeatureSH(e) {
+	    var layerSH = e.target;
+
+	    layerSH.setStyle({
+	        weight: 5,
+	        color: '#666',
+	        dashArray: '',
+	        fillOpacity: 0.9
+	    });
+
+	    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+	        layerSH.bringToFront();
+	    }
+	        infoSH.update(layerSH.feature.properties);
+
+	}
+	 function highlightFeatureRS(e) {
+	    var layerRS = e.target;
+
+	    layerRS.setStyle({
+	        weight: 5,
+	        color: '#666',
+	        dashArray: '',
+	        fillOpacity: 0.9
+	    });
+
+	    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+	        layerRS.bringToFront();
+	    }
+	        infoRS.update(layerRS.feature.properties);
+
+	}
+	function highlightFeatureRI(e) {
+	    var layerRI = e.target;
+
+	    layerRI.setStyle({
+	        weight: 5,
+	        color: '#666',
+	        dashArray: '',
+	        fillOpacity: 0.9
+	    });
+
+	    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+	        layerRI.bringToFront();
+	    }
+	        infoRI.update(layerRI.feature.properties);
+
+	}
+	function resetHighlightZD(e) {
+    	geojsonZD.resetStyle(e.target);
+    	    infoZD.update();
+
+	}
+    function resetHighlightSH(e) {
+    	geojsonSH.resetStyle(e.target);
+    	    infoSH.update();
+
+	}
+	function resetHighlightRS(e) {
+    	geojsonRS.resetStyle(e.target);
+    	    infoRS.update();
+
+	}
+	function resetHighlightRI(e) {
+    	geojsonRI.resetStyle(e.target);
+    	    infoRS.update();
+
+	}
+	function zoomToFeatureZD(e) {
+    map.fitBounds(e.target.getBounds());
+}
+	function zoomToFeatureSH(e) {
+    map.fitBounds(e.target.getBounds());
+}
+    function zoomToFeatureRS(e) {
+    map.fitBounds(e.target.getBounds());
+}
+    function zoomToFeatureRI(e) {
+    map.fitBounds(e.target.getBounds());
+}
+	function onEachFeatureZD(feature, layerZD) {
+    layerZD.on({
+        mouseover: highlightFeatureZD,
+        mouseout: resetHighlightZD,
+        click: zoomToFeatureZD
+    });
+  }  
+    function onEachFeatureSH(feature,layerSH) {
+    layerSH.on({
+        mouseover: highlightFeatureSH,
+        mouseout: resetHighlightSH,
+        click: zoomToFeatureSH
+    });
+}
+    function onEachFeatureRS(feature,layerRS) {
+    layerRS.on({
+        mouseover: highlightFeatureRS,
+        mouseout: resetHighlightRS,
+        click: zoomToFeatureRS
+    });
+}
+    function onEachFeatureRI(feature,layerRI) {
+    layerRI.on({
+        mouseover: highlightFeatureRI,
+        mouseout: resetHighlightRI,
+        click: zoomToFeatureRI
+    });
+}
+var infoZD = L.control();
+var infoSH = L.control();
+var infoRS = L.control();
+var infoRI = L.control();
+var infoVI = L.control();
+
+infoZD.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'infoZD'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+infoSH.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'infoSH'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+infoRS.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'infoRS'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+infoRI.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'infoRI'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+infoVI.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'infoVI'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+// method that we will use to update the control based on feature properties passed
+infoZD.update = function (props) {
+    this._div.innerHTML = '<h4>Apercu sur les zones à risques de désertification :</h4>' +  (props ?
+        'Zone : <b>' + props.tab_Feui_7 + '</b> <br />Province ou Prefecture : ' + props.NAME + '</b> <br />Region Biogeographique : '+ props.RegionBiogeo +  '</b> <br />Occupation : '+ props.Occupation  + '</b> <br />Bioclimat : '+ props.Bioclimat +'</b> <br />Facteur Discriminant : '+ props.Facteurdiscriminant + '</sup>'
+        : ' Merci de mettre le curseur sur une province.');
+};
+
+infoSH.update = function (props) {
+    this._div.innerHTML = '<h4>Apercu sur le stress hydrique au Maroc </h4>' +  (props ?
+    	'Region : <b>' + props.Nom_Region + '</b> <br />Indice de Stress Hydrique : '+ props.Jt_WaterSt + '  ' + props.Jt_LABELWS+ '</sup>'
+        : ' Merci de mettre le curseur sur une région.');
+};
+
+infoRS.update = function (props) {
+    this._div.innerHTML = '<h4>Apercu sur le risque de secheresse au Maroc </h4>' +  (props ?
+    	'Region : <b>' + props.Nom_Region + '</b> <br />Indice de secheresse : '+ props.Jt_Drought + '  ' + props.Jt_LABELDR+ '</sup>'
+        : ' Merci de mettre le curseur sur une région.');
+};
+infoRI.update = function (props) {
+    this._div.innerHTML = '<h4>Apercu sur le risque d innondation au Maroc </h4>' +  (props ?
+    	'Region : <b>' + props.Nom_Region + '</b> <br />Indice d innodation : '+ props.Jt_FloodRi + '  ' + props.Jt_LABELFR+ '</sup>'
+        : ' Merci de mettre le curseur sur une région.');
+};
+infoVI.update = function (props) {
+    this._div.innerHTML = '<h4>Villes les plus touchees par des incendies de foret </h4>' +  (props ?
+        'Ville : <b>' + props.NOM 
+        : ' De janvier a aout 2019, 229 incendies ont ete enregistres.');
+};
+map.on('overlayadd', function (eventLayer) {
+    if (eventLayer.name === 'Sensibilite a la desertification') {
+        this.removeControl(infoSH);
+        this.removeControl(infoRS);
+        this.removeControl(infoRI);
+        this.removeControl(infoVI);
+        infoZD.addTo(this);
+    } else if (eventLayer.name === 'Stress Hydrique au Maroc'){
+        this.removeControl(infoZD);
+        this.removeControl(infoRS);
+        this.removeControl(infoRI);
+        this.removeControl(infoVI);
+        infoSH.addTo(this);
+    } else if (eventLayer.name === 'Risque de secheresse au Maroc'){
+        this.removeControl(infoZD);
+        this.removeControl(infoSH);
+        this.removeControl(infoRI);
+        this.removeControl(infoVI);
+        infoRS.addTo(this);
+    }else  if (eventLayer.name === 'Risque d innondation au Maroc'){
+        this.removeControl(infoZD);
+        this.removeControl(infoSH);
+        this.removeControl(infoRS);
+        this.removeControl(infoVI);
+        infoRI.addTo(this); 
+    }else {
+        this.removeControl(infoZD);
+        this.removeControl(infoSH);
+        this.removeControl(infoRS);
+        this.removeControl(infoRI);
+        infoVI.addTo(this); 
+}});
+
+// DECLARATION DES LAYERS */
+	var geojsonZD = L.geoJson(huitzones, {
+		style: MonstyleZD,
+	    onEachFeature: onEachFeatureZD,
+});
+
+	var geojsonSH = L.geoJson(mesriskaqueduct, {
+		style: MonstyleSH,
+	    onEachFeature: onEachFeatureSH,
+});
+    var geojsonRS = L.geoJson(mesriskaqueduct, {
+		style: MonstyleRS,
+	    onEachFeature: onEachFeatureRS,
+});
+    var geojsonRI = L.geoJson(mesriskaqueduct, {
+		style: MonstyleRI,
+	    onEachFeature: onEachFeatureRI,
+});
+// INCENDIES VILLES
+var flameIcon = L.Icon.extend({options: {
+    iconUrl: 'marker-icon.png',
+    iconSize:   [38, 95],}
+});
+
+var geojsonVI = L.geoJson(villesincendies, {
+        icon: flameIcon,
+        onEachFeature: onEachFeatureZD,
+});
+
+//ECHELLE GRAPHIQUE
+var graphicScale = L.control.graphicScale({fill:'fill',doubleLine:true}).addTo(map);
+
+//BASEMAPS
+var basemaps = {
+    EsriWorldStreetMap: L.tileLayer.wms('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+    }),
+
+    OpenStreetMapDE:L.tileLayer.wms('https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}),
+
+    EsriWorldTopoMap: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+}),
+
+    EsriWorldImagery: L.tileLayer.wms('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+})
+};
+var overlayMaps = {
+    "Sensibilite a la desertification": geojsonZD,
+     "Stress Hydrique au Maroc": geojsonSH,
+     "Risque de secheresse au Maroc" : geojsonRS,
+     "Risque d innondation au Maroc" : geojsonRI,
+     "Villes connaissant le plus d incendies de fôret" : L.geoJSON(villesincendies),
+    };
+L.control.layers(basemaps, overlayMaps,{collapsed: false}).addTo(map);
+basemaps.EsriWorldStreetMap.addTo(map);
+
+// LES LEGENDES
+//              LEGENDE ZD
+var legendZD = L.control({position: 'bottomright'});
+
+    legendZD.onAdd = function () {
+
+    var div = L.DomUtil.create('div', 'infoZD legendZD'),
+        grades = [1,2,3,4,5,6,7,8,9];
+    div.innerHTML += '<h6>Legende :</h6>';
+    for (var i = 0; i < (grades.length-1); i++) {
+        div.innerHTML +=
+            '<div style="background-color :' + getColorZD(grades[i]) + '"></i> ' +
+            grades[i] + (grades[i+1] ? ' zone  <br>':' zone');
+    }
+    return div;
+};
+//              LEGENDE SH
+var legendSH = L.control({position: 'bottomright'});
+
+    legendSH.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'infoSH legendSH'),
+        grades = [0,1,2,3,4,5];
+
+    div.innerHTML += '<h6>Legende :</h6>';
+    for (var i = 0; i < (grades.length-1); i++) {
+        div.innerHTML +=
+            '<div style="background-color :' + getColorSH(grades[i+1]) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? ' _ ' + grades[i + 1] + ' <br>' :' ');
+    }    
+
+    return div;
+};
+//              LEGENDE RS
+var legendRS = L.control({position: 'bottomright'});
+
+    legendRS.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'infoSH legendSH'),
+        grades = [0,0.2,0.4,0.6,0.8,1];
+
+    div.innerHTML += '<h6>Legende :</h6>';
+    for (var i = 0; i < (grades.length-1); i++) {
+        div.innerHTML +=
+            '<div style="background-color :' + getColorRS(grades[i+1]) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? ' _ ' + grades[i + 1] + ' <br>' :'+');
+    }    
+
+    return div;
+};
+//              LEGENDE RI
+var legendRI = L.control({position: 'bottomright'});
+
+    legendRI.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'infoRI legendRI'),
+        grades = [0,1,2,3,4,5];
+
+    div.innerHTML += '<h6>Legende :</h6>';
+    for (var i = 0; i < (grades.length-1); i++) {
+        div.innerHTML +=
+            '<div style="background-color :' + getColorRI(grades[i+1]) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? ' _ ' + grades[i + 1] + ' <br>' :' ');
+    }    
+
+    return div;
+};
+// CONDITIONS SUR LES LEGENDES 
+
+map.on('overlayadd', function (eventLayer) {
+    if (eventLayer.name === 'Sensibilite a la desertification') {
+        this.removeControl(legendSH);
+        this.removeControl(legendRS);
+        this.removeControl(legendRI);
+        legendZD.addTo(this);
+    } else if (eventLayer.name === 'Stress Hydrique au Maroc'){
+        this.removeControl(legendZD);
+        this.removeControl(legendRS);
+        this.removeControl(legendRI);
+        legendSH.addTo(this);
+    } else if (eventLayer.name === 'Risque de secheresse au Maroc'){
+        this.removeControl(legendZD);
+        this.removeControl(legendSH);
+        this.removeControl(legendRI);
+        legendRS.addTo(this);
+    }else if (eventLayer.name === 'Risque d innondation au Maroc'){
+        this.removeControl(legendZD);
+        this.removeControl(legendSH);
+        this.removeControl(legendRS);
+        legendRI.addTo(this); 
+    }else {
+        this.removeControl(legendZD);
+        this.removeControl(legendSH);
+        this.removeControl(legendRS);
+        this.removeControl(legendRI);
+}});
+</script>
+
+
+    
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/jquery/jquery.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/jquery.easing/jquery.easing.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/jquery-sticky/jquery.sticky.js"></script>
+  <script src="assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+  <script src="assets/vendor/counterup/counterup.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/owl.carousel/owl.carousel.min.js"></script>
+  <script src="assets/vendor/venobox/venobox.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

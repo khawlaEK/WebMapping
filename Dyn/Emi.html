@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Émission de Dioxyde de Carbone en Afrique du Nord</title>
+  <meta content="" name="descriptison">
+  <meta content="" name="keywords">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link href="../assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="../assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="../assets/vendor/venobox/venobox.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="lib/leaflet/leaflet.css" />        
+  <script src="lib/leaflet/leaflet.js"></script>
+  <script src ="Climat_NA2.js" ></script>
+  <script src='Centroide_NA2.js'></script>
+  <script src="lib/js/leaflet.browser.print.min.js"></script>
+      <link rel="stylesheet" href="lib/opacity/Control.Opacity.css" />
+       <script src="lib/jquery/jquery-1.9.1.js"></script>
+       <script src="lib/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+       <link rel="stylesheet" href="lib/jquery/jquery-ui-1.10.3.custom.min.css" />
+
+  <!--****************************control mini map *****************-->
+      <script src="js/Control.MiniMap.js"></script>
+      <link rel="stylesheet" href="css/Control.MiniMap.css" />
+
+      <style>
+        #map{
+          width: 100%;
+        height: 86vh;
+        z-index: 0;
+        }
+        #Texte{}
+
+        .info {
+            padding: 5px 5px;
+            font: 10px/14px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,8);
+            box-shadow: 0 0 10px rgb(85, 168, 244);
+            border-radius: 3px;
+        }
+
+        .legend {
+            line-height: 20px;
+            color: #555;
+        }
+        .legend i {
+            width: 50px;
+            height:18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 1;
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+  <header id="header" style="z-index: 5;">
+    <div class="container d-flex">
+      <div class="logo mr-auto">
+        <h1 class="text-light"><a href="index.html"><span>Émission de Dioxyde de Carbone en Afrique du Nord</span></a></h1>
+      </div>
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+            <li><a href="../AN.html"><i class="fa fa-arrow-left"></i>  Retour</a></li>
+        </ul>
+      </nav><!-- .nav-menu -->
+    </div>
+  </header><!-- End Header -->
+
+  <body>
+    <div id="Texte" style="font: 16px/24px Arial, Helvetica, sans-serif; color:white ;text-align:center; background:#1bbca3"></div>
+    <div id='map'></div>
+    
+    <script type="text/javascript">     
+         var baseLayers = {
+        EsriWorldStreetMap: L.tileLayer.wms('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+        }),
+    
+        OpenStreetMapDE:L.tileLayer.wms('https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }),
+    
+        EsriWorldTopoMap: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+    }),
+    
+        EsriWorldImagery: L.tileLayer.wms('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    })
+    };
+        var map = L.map('map', {
+            center: [48, -3],
+            zoom: 5,
+            zoomControl: true
+        }).setView([28.202820, 10.063284], 4);
+    
+        
+        L.control.layers(baseLayers).addTo(map);
+           baseLayers.EsriWorldStreetMap.addTo(map);
+        //*************************************************************************//
+        function highlightFeature(e) {
+            var layer = e.target;
+    
+            layer.setStyle({
+                    weight: 10,
+                    opacity: 0.4,
+                    color: '#8088f2',
+                    fillOpacity: 1,
+                    fillColor: '#b878f0' });
+    
+           
+    
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }    }
+    
+        function zoomToFeature(e) {
+        map.fitBounds(e.target.getBounds());}
+        //********************************************************************//
+        function Monstyle(feature) {
+        return {
+          weight: 3,
+          color: '#ee22f5',
+          fillOpacity: 0.8,
+          fillColor: '#403182',
+        };
+      }
+        function Monstyle2(feature) {
+        return {
+          weight: 1,
+          opacity: 1,
+          color: 'black',
+          fillOpacity: 0.8,
+          fillColor: "#99e7ff",
+        };
+      }
+        function resetHighlight1(e) {
+                        emissionCO2_15.resetStyle(e.target); }
+        function resetHighlight2(e) {
+                        emissionCO2_16.resetStyle(e.target); }
+        function resetHighlight3(e) {
+                        emissionCO2_17.resetStyle(e.target);}
+        function resetHighlight4(e) {
+                        emissionCO2_18.resetStyle(e.target);}
+    
+        function onEachFeature1(feature, layer) {
+                        layer.on({
+                            mouseout: resetHighlight1,
+                            mouseover: highlightFeature,
+                            click: zoomToFeature
+                        });
+                var tooltip = "<b> Pays : " + layer.feature.properties.pays + "</b><br/>" +
+                  "<b>Volume d'émission CO2 en 2015 :</b> " + layer.feature.properties.CO2_2015 +" tonnes</br>" 
+                  layer.bindTooltip(tooltip); //bind text and tooltip to the layer
+                  layer.bindTooltip(tooltip).closeTooltip();
+    
+                    }
+        function onEachFeature2(feature, layer) {
+                        layer.on({
+                            mouseout: resetHighlight2,                        
+                            mouseover: highlightFeature,
+                            click: zoomToFeature
+                        });
+                var tooltip = "<b> Pays : " + layer.feature.properties.pays + "</b><br/>" +
+                  "<b>Volume d'émission CO2 en 2016 :</b> " + layer.feature.properties.CO2_2016 +" tonnes</br>" 
+                  layer.bindTooltip(tooltip); //bind text and tooltip to the layer
+                  layer.bindTooltip(tooltip).closeTooltip();
+                    }
+        function onEachFeature3(feature, layer) {
+                        layer.on({
+                            mouseover: highlightFeature,
+                            mouseout: resetHighlight3,
+                            click: zoomToFeature
+                        });
+                 var tooltip = "<b> Pays : " + layer.feature.properties.pays + "</b><br/>" +
+                  "<b>Volume d'émission CO2 en 2017 :</b> " + layer.feature.properties.CO2_2017 +" tonnes</br>" 
+                  layer.bindTooltip(tooltip); //bind text and tooltip to the layer
+                  layer.bindTooltip(tooltip).closeTooltip();
+                    }
+        function onEachFeature4(feature, layer) {
+                        layer.on({
+                            mouseover: highlightFeature,
+                            mouseout: resetHighlight4,
+                            click: zoomToFeature
+                        });
+                 var tooltip = "<b> Pays : " + layer.feature.properties.pays + "</b><br/>" +
+                  "<b>Volume d'émission CO2 en 2018 :</b> " + layer.feature.properties.CO2_2018 +" tonnes</br>" 
+                  layer.bindTooltip(tooltip); //bind text and tooltip to the layer
+                  layer.bindTooltip(tooltip).closeTooltip();
+                    }
+    
+        var shp = L.geoJson(mynadata,{style: Monstyle2}).addTo(map);
+    
+        //********************************************************//
+        var info = L.control({position: 'bottomright'});
+        info.onAdd = function (map) {
+        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+        this._div.innerHTML = "* Passer le curseur sur le pays souhaité. <br> * Une boite de dialogue s'ouvrira contenant les statistiques de l'émission CO2. <br>* Déplacer le slider pour changer l'année correspondante : 2015 / 2016 / 2017 / 2018";
+        return this._div;
+    
+    };
+    
+    // method that we will use to update the control based on feature properties passed
+    
+    var valeur=1; 
+    info.addTo(map);
+    
+    //**********************************************************************************************************************//
+        // add a scale at at your map.
+    var scale = L.control.scale().addTo(map);
+    
+    
+    var opacity_layer;
+    document.getElementById("Texte").innerHTML = "Carte à symboles proportionnels classifiant les pays du Nord Afrique en fonction de l'émission du CO2 dans le pays.";
+    //Create a jquery-ui slider with values from 0 to 100. Match the opacity value to the slider value divided by 100.
+      L.Control.MonSlider = L.Control.extend({
+        options: {
+            position: 'topleft'
+        },
+        setOpacityLayer: function (layer) {
+                opacity_layer = layer;
+        },
+        onAdd: function (map) {
+            var opacity_slider_div = L.DomUtil.create('div', 'opacity_slider_control');
+            
+            $(opacity_slider_div).slider({
+              orientation: "vertical",
+              range: "min",
+              min: 1,
+              max: 4,
+              value: 1,
+              step: 1,
+              start: function ( event, ui) {
+                //When moving the slider, disable panning.
+                map.dragging.disable();
+                map.once('mousedown', function (e) { 
+                  map.dragging.enable();
+                });
+              },
+              slide: function ( event, ui ) {
+    
+    
+                if (ui.value==1) {
+    
+                    valeur=1;
+                    map.removeLayer(emissionCO2_16);
+                    map.removeLayer(emissionCO2_17);
+                    map.removeLayer(emissionCO2_18);
+                    emissionCO2_15.addTo(map);
+    
+    
+    
+                }
+                else if (ui.value==2) {
+      
+                    valeur=2;
+                    map.removeLayer(emissionCO2_15);
+                    map.removeLayer(emissionCO2_17);
+                    map.removeLayer(emissionCO2_18);
+                    emissionCO2_16.addTo(map);
+    
+                }
+                else if (ui.value==3) {
+          
+                    valeur=3;
+                    map.removeLayer(emissionCO2_15);
+                    map.removeLayer(emissionCO2_16);
+                    map.removeLayer(emissionCO2_18);
+                    emissionCO2_17.addTo(map);
+    
+                }
+                else if (ui.value==4) {
+          
+                    valeur=4;
+                    map.removeLayer(emissionCO2_15);
+                    map.removeLayer(emissionCO2_16);
+                    map.removeLayer(emissionCO2_17);
+                    emissionCO2_18.addTo(map);
+    
+                }
+                 }
+            });        
+            return opacity_slider_div;
+        }
+    });
+    
+           //Create the opacity controls
+        
+            var MonSlider = new L.Control.MonSlider();
+            map.addControl(MonSlider);
+    
+    
+    
+    //************************************************************************************************//   
+        function getRadius(area) {
+          var radius = (area)*(50)/(219.304044);
+          return radius;
+        };
+        function getRadius2(area) {
+          var radius = (area)*(50)/(233.1712217);
+          return radius;
+        };
+        function getRadius3(area) {
+          var radius = (area)*(50)/(237.0177878);
+          return radius;
+        };
+        function getRadius4(area) {
+          var radius = (area)*(50)/(238.8157158);
+          return radius;
+        };
+       var emissionCO2_15 = L.geoJson(mynadata2, {style: Monstyle, onEachFeature: onEachFeature1,
+                pointToLayer: function(feature, latlng) {
+                  return L.circleMarker(latlng, {
+                            weight: 3,
+                            color: '#ee22f5',
+                            fillOpacity: 0.8,
+                            fillColor: '#403182',
+                            radius: getRadius(Number(feature.properties.CO2_2015))
+    
+          });
+        }
+            }).addTo(map);
+        var emissionCO2_16 = L.geoJson(mynadata2, {style: Monstyle, onEachFeature: onEachFeature2,
+                pointToLayer: function(feature, latlng) {
+                  return L.circleMarker(latlng, {
+                            weight: 3,
+                            color: '#ee22f5',
+                            fillOpacity: 0.8,
+                            fillColor: '#403182',
+                            radius: getRadius2(Number(feature.properties.CO2_2016))
+                      });
+                },  
+            });
+        var emissionCO2_17 = L.geoJson(mynadata2, {style: Monstyle, onEachFeature: onEachFeature3,
+                pointToLayer: function(feature, latlng) {
+                  return L.circleMarker(latlng, {
+                            weight: 3,
+                            color: '#ee22f5',
+                            fillOpacity: 0.8,
+                            fillColor: '#403182',
+                            radius: getRadius3(Number(feature.properties.CO2_2017))
+                      });
+                }
+            });
+        var emissionCO2_18 = L.geoJson(mynadata2, {style: Monstyle, onEachFeature: onEachFeature4,
+                pointToLayer: function(feature, latlng) {
+                  return L.circleMarker(latlng, {
+                            weight: 3,
+                            color: '#ee22f5',
+                            fillOpacity: 0.8,
+                            fillColor: '#403182',
+                            radius: getRadius4(Number(feature.properties.CO2_2018))
+                      });
+                },  
+            });   
+      
+    
+        
+    
+      //*******************************************************************Mini Map***********************************///
+                                    var miniMap = new L.Control.MiniMap(googlesatellite, {
+                                        toggleDisplay: true
+                                    }).addTo(map);
+    
+                                    miniMap.on("toggle", function(data) {
+                                        console.log("Listen for `toggle` event: miniMap is " + (data.minimized ? "minimize" : "restore"));
+                                    });
+                                    miniMap.on("minimize", function() {
+                                        console.log("Listen for `minimize` event");
+                                    });
+                                    miniMap.on("restore", function() {
+                                        console.log("Listen for `restore` event");
+                                    });
+    
+                                    var actionButton = new(L.Control.extend({
+                                        options: {
+                                            position: 'topleft',
+                                            html: "#",
+                                            toggleClass: "toggle",
+                                            status: false,
+                                            listeners: []
+                                        },
+                                        initialize: function(options) {
+                                            L.setOptions(this, options);
+                                            this._status = this.options.status;
+                                        },
+    
+                                        onAdd: function() {
+                                            var container = L.DomUtil.create('div', 'leaflet-control-actionbtn leaflet-bar leaflet-control');
+                                            var link = this._link = L.DomUtil.create('a', '', container);
+                                            link.href = '#';
+                                            link.innerHTML = this.options.html;
+                                            link.title = this.options.title || this.options.html;
+                                            L.DomEvent.on(link, 'click', this._onBtnClick, this);
+                                            if (this.options.status) {
+                                                this._toggle();
+                                            }
+                                            this._addListeners();
+                                            return container;
+                                        },
+    
+                                        toggle: function() {
+                                            this._toggle();
+                                            if (this.options.action) {
+                                                this._removeListeners();
+                                                this._forListeners(null, function(listener) {
+                                                    listener[0].once(listener[1], this._addListeners, this);
+                                                });
+                                                this.options.action.call(this, this._status);
+                                            }
+                                        },
+    
+                                        _toggle: function() {
+                                            this._status = !this._status;
+                                            if (!this._status) {
+                                                L.DomUtil.addClass(this._link, this.options.toggleClass);
+                                            } else {
+                                                L.DomUtil.removeClass(this._link, this.options.toggleClass);
+                                            }
+                                        },
+    
+                                        _addListeners: function() {
+                                            this._forListeners();
+                                        },
+    
+                                        _removeListeners: function() {
+                                            this._forListeners(true);
+                                        },
+    
+                                        _forListeners: function(off, func) {
+                                            if (this.options.listeners.length) {
+                                                for (var fry = 0; fry < this.options.listeners.length; fry++) {
+                                                    var listener = this.options.listeners[fry];
+                                                    var action = listener[0] && listener[0][off ? "off" : "on"];
+                                                    if (action && typeof listener[1] === 'string') {
+                                                        if (func) {
+                                                            func.call(this, listener);
+                                                        } else {
+                                                            action.call(listener[0], listener[1], this._toggle, this);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+    
+                                        _onBtnClick: function(e) {
+                                            L.DomEvent.stop(e);
+                                            this.toggle();
+                                        }
+                                    }))({
+                                        action: function() {
+                                            miniMap._toggleDisplayButtonClicked();
+                                        },
+                                        status: !miniMap._minimized,
+                                        html: "MM",
+                                        listeners: [
+                                            [miniMap, "toggle"]
+                                        ]
+                                    });
+                                    actionButton.addTo(map);
+    ////////////////////////////////**///////////////////////////////////////////////////////////////////////////////////////////////
+    /********************************************************************Print the map *********************************************************************/
+                L.control.browserPrint().addTo(map);
+                            map.on("browser-print-start", function(e){
+                    /*on print start we already have a print map and we can create new control and add it to the print map to be able to print custom information */
+                    scale.addTo(e.printMap);
+                    miniMap.addTo(e.printMap);
+                });
+    /****************************************************************************************************************************************************************/
+    
+</script>
+
+  
+  
+  <!-- Vendor JS Files -->
+  <script src="../assets/vendor/jquery/jquery.min.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/jquery.easing/jquery.easing.min.js"></script>
+  <script src="../assets/vendor/php-email-form/validate.js"></script>
+  <script src="../assets/vendor/jquery-sticky/jquery.sticky.js"></script>
+  <script src="../assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+  <script src="../assets/vendor/counterup/counterup.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/owl.carousel/owl.carousel.min.js"></script>
+  <script src="../assets/vendor/venobox/venobox.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="../assets/js/main.js"></script>
+
+</body>
+
+</html>

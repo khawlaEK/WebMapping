@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <link href="assets/img/favicon.png" rel="icon">
+
+  <title>Risques Climatiques en Afrique du Nord</title>
+  <meta content="" name="descriptison">
+  <meta content="" name="keywords">
+  <link href="" rel="icon">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="assets/vendor/venobox/venobox.css" rel="stylesheet">
+
+  <link href="assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="leaflet.css" />
+	<script src="leaflet.js"></script>
+    <script src="Climat_NA.geojson" type="text/javascript"></script>
+    <script src="Centroide_NA.geojson" type="text/javascript"></script>
+    <style>
+      #map {
+        width: 100%;
+        height: 89vh;
+        z-index: 0;
+      }
+      .infoRIN {
+          padding: 6px 8px;
+          font: 14px/16px Arial, Helvetica, sans-serif;
+          background: white;
+          background: rgba(255,255,255,0.9);
+          box-shadow: 0 0 15px rgba(0,0,0,0.5);
+          border-radius: 5px;
+      }
+      .infoRIN h6 {
+          margin: 0 0 5px;
+          color: #000;
+      }
+      .infoRIC {
+          padding: 6px 8px;
+          font: 14px/16px Arial, Helvetica, sans-serif;
+          background: white;
+          background: rgba(255,255,255,0.9);
+          box-shadow: 0 0 15px rgba(0,0,0,0.5);
+          border-radius: 5px;
+      }
+      .infoRIC h6 {
+          margin: 0 0 5px;
+          color: #000;
+      }
+          .infoFF {
+              padding: 6px 8px;
+              font: 14px/16px Arial, Helvetica, sans-serif;
+              background: white;
+              background: rgba(255,255,255,0.9);
+              box-shadow: 0 0 15px rgba(0,0,0,0.5);
+              border-radius: 5px;
+          }
+          .infoFF h6 {
+              margin: 0 0 5px;
+              color: #000;
+          }
+          .infoIA {
+              padding: 6px 8px;
+              font: 14px/16px Arial, Helvetica, sans-serif;
+              background: white;
+              background: rgba(255,255,255,0.9);
+              box-shadow: 0 0 15px rgba(0,0,0,0.5);
+              border-radius: 5px;
+          }
+          .infoIA h6 {
+              margin: 0 0 5px;
+              color: #000;
+          }
+      .legendRIN {
+              line-height: 18px;
+              color: #000;
+          }
+      
+          .legendRIN i {
+             width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+          }
+          .legendRIC {
+              line-height: 18px;
+              color: #000;
+          }
+      
+          .legendRIC i {
+             width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+          }
+    </style>	
+
+
+
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+  <header id="header" style="z-index: 5;">
+    <div class="container d-flex">
+      <div class="logo mr-auto">
+        <h1 class="text-light"><a href="index.html"><span>Risques Climatiques en Afrique du Nord</span></a></h1>
+      </div>
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li class="drop-down"><a href="">Cartes 3D</a>
+              <ul>
+                <li class=""><a href="./map3/map3.html">Risque d'inondation</a></li>
+              </ul>
+            </li>
+            
+            <li class="drop-down"><a href="">Autres</a>
+                <ul>
+                    <li class="drop-down"><a href="">Cartes Dynamiques</a>
+                        <ul>
+                          <li ><a href="./Dyn/CouvFo.html">Couverture Forestière</a></li>
+                          <li class=""><a href="./Dyn/Def.html">Déforestation</a></li>
+                          <li class=""><a href="./Dyn/Emi.html">Émission de Dioxyde de Carbone</a></li>
+                        </ul>
+                    </li>
+                    <li class="drop-down"><a href="">Diagrammes</a>
+                        <ul>
+                          <li ><a href="./VulSech/map.html">Vulnérabilité à la Sécheresse</a></li>
+                          <li class=""><a href="http://barcharterosion.c1.biz/">Erosion</a></li>
+                          <li class=""><a href="http://barchartpluviometrie.c1.biz/">Pluviométrie</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="drop-down"><a href="">Changer de region</a>
+                <ul>
+                  <li ><a href="maroc.html">Maroc</a></li>
+                  <li class="active"><a href="#">Afrique du Nord</a></li>
+                </ul>
+            </li>
+        </ul>
+      </nav><!-- .nav-menu -->
+    </div>
+  </header><!-- End Header -->
+
+  <div id='map'></div>
+  <script type="text/javascript">
+    var map = L.map('map').setView([30.25, 9.69], 5);
+    
+    // get color depending on indice d'inondation
+    function getColorRIN(d) {
+      return d > 3.75 ? '#3182bd' :
+             d > 2.75 ? '#9ecae1' :
+                                  '#deebf7';
+    }
+    function MonstyleRIN(feature) {
+      return {
+        weight: 2,
+        opacity: 1,
+        color: 'black',
+        dashArray: '3',
+        fillOpacity: 0.9,
+        fillColor: getColorRIN(feature.properties.Risque_ino)
+      };
+    }
+      // get color depending on indice de incendie
+    function getColorRIC(d) {
+      return d > 2 ? '#d95f0e' :
+             d > 1 ? '#fec44f' :
+                                       '#fff7bc';
+    }
+  
+    function MonstyleRIC(feature) {
+      return {
+        weight: 2,
+        opacity: 1,
+        color: 'black',
+        dashArray: '3',
+        fillOpacity: 0.9,
+        fillColor: getColorRIC(feature.properties.Indice_inc)
+      };
+    }
+      // carte a symboles proportionnelles des superficies attaquees par les feux de foret
+      var sym = L.geoJson(Centroide_NA, {
+          style: MonstyleSymFF,
+          pointToLayer: function(feature, ll) {
+              return L.circleMarker(ll, {
+              radius: calcRadiusFF(Number(feature.properties.Sup_Incendie))
+              });
+          },
+      });
+      
+      function MonstyleSymFF(feature) {
+          return {
+              weight: 2,
+              opacity: 1,
+              color: '#252525',
+              dashArray: '3',
+              fillOpacity: 0.8,
+          };
+      }
+      
+      function calcRadiusIA(val) {
+          var radius = Math.sqrt(val)*(50/Math.sqrt(277235));
+              return radius;       
+      }
+  
+      function MonstyleSymIA(feature) {
+          return {
+              weight: 2,
+              opacity: 1,
+              color: '#d95f0e',
+              dashArray: '3',
+              fillOpacity: 0.8,
+          };
+      }
+      function calcRadiusFF(val) {
+          var radius = 25*Math.sqrt(val)*(40/Math.sqrt(2611388));;
+              return radius;       
+      }
+    function highlightFeatureRIN(e) {
+        var layerRIN = e.target;
+  
+        layerRIN.setStyle({
+            weight: 5,
+            color: '#666',
+            dashArray: '',
+            fillOpacity: 0.9
+        });
+  
+        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+            layerRIN.bringToFront();
+        }
+            infoRIN.update(layerRIN.feature.properties);
+  
+    }
+      function highlightFeatureRIC(e) {
+        var layerRIC = e.target;
+  
+        layerRIC.setStyle({
+            weight: 5,
+            color: '#666',
+            dashArray: '',
+            fillOpacity: 0.9
+        });
+  
+        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+            layerRIC.bringToFront();
+        }
+            infoRIC.update(layerRIC.feature.properties);
+  
+    }
+      function highlightFeatureIA(e) {
+          var layerIA = e.target;
+  
+          layerIA.setStyle({
+              weight: 5,
+              color: '#666',
+              dashArray: '',
+              fillOpacity: 0.9
+          });
+  
+          if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+              layerIA.bringToFront();
+          }
+              infoIA.update(layerIA.feature.properties);
+  
+      }
+  function highlightFeatureFF(e) {
+          var layerFF = e.target;
+  
+          layerFF.setStyle({
+              weight: 5,
+              color: '#666',
+              dashArray: '',
+              fillOpacity: 0.9
+          });
+  
+          if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+              layerFF.bringToFront();
+          }
+              infoFF.update(layerFF.feature.properties);
+  
+      }
+    function resetHighlightRIN(e) {
+        geojsonRIN.resetStyle(e.target);
+            infoRIN.update();
+  
+    }
+      function resetHighlightRIC(e) {
+        geojsonRIC.resetStyle(e.target);
+            infoRIC.update();
+  
+    }
+     function resetHighlightIA(e) {
+          symIA.resetStyle(e.target);
+              infoIA.update();
+  
+      }
+      function resetHighlightFF(e) {
+          symFF.resetStyle(e.target);
+              infoFF.update();
+  
+      }
+    function zoomToFeatureRIN(e) {
+      map.fitBounds(e.target.getBounds());
+  }
+    function zoomToFeatureRIC(e) {
+      map.fitBounds(e.target.getBounds());
+  }
+      function zoomToFeatureIA(e) {
+      map.fitBounds(e.target.getBounds());
+  }
+      function zoomToFeatureFF(e) {
+      map.fitBounds(e.target.getBounds());
+  }
+    function onEachFeatureRIN(feature, layerRIN) {
+      layerRIN.on({
+          mouseover: highlightFeatureRIN,
+          mouseout: resetHighlightRIN,
+          click: zoomToFeatureRIN
+      });
+    }  
+      function onEachFeatureRIC(feature,layerRIC) {
+      layerRIC.on({
+          mouseover: highlightFeatureRIC,
+          mouseout: resetHighlightRIC,
+          click: zoomToFeatureRIC
+      });
+  }
+      function onEachFeatureIA(feature,layerIA) {
+      layerIA.on({
+          mouseover: highlightFeatureIA,
+          mouseout: resetHighlightIA,
+          click: zoomToFeatureIA
+      });
+  }
+      function onEachFeatureFF(feature,layerFF) {
+      layerFF.on({
+          mouseover: highlightFeatureFF,
+          mouseout: resetHighlightFF,
+          click: zoomToFeatureFF
+      });
+  }
+  var infoRIN = L.control();
+  var infoRIC = L.control();
+  var infoIA = L.control();
+  var infoFF = L.control();
+  
+  infoRIN.onAdd = function (map) {
+      this._div = L.DomUtil.create('div', 'infoRIN'); // create a div with a class "info"
+      this.update();
+      return this._div;
+  };
+  infoRIC.onAdd = function (map) {
+      this._div = L.DomUtil.create('div', 'infoRIC'); // create a div with a class "info"
+      this.update();
+      return this._div;
+  };
+  infoIA.onAdd = function (map) {
+      this._div = L.DomUtil.create('div', 'infoIA'); // create a div with a class "info"
+      this.update();
+      return this._div;
+  };
+  infoFF.onAdd = function (map) {
+      this._div = L.DomUtil.create('div', 'infoFF'); // create a div with a class "info"
+      this.update();
+      return this._div;
+  };
+  
+  // method that we will use to update the control based on feature properties passed
+  infoRIN.update = function (props) {
+      this._div.innerHTML = '<h4>Risque d inondation en Afrique du Nord :</h4>' +  (props ?
+          'Pays: <b>' + props.Pays + '</b> <br />Indice du risque d inondation : '+ props.Risque_ino 
+          : ' Merci de mettre le curseur sur un pays.');
+  };
+  
+  infoRIC.update = function (props) {
+      this._div.innerHTML = '<h4>Risque d incendie en Afrique du Nord </h4>' +  (props ?
+        'Indice d incendie : '+ props.Indice_inc + '  ' + '</sup>'
+          : ' Merci de mettre le curseur sur un pays.');
+      this._div.innerHTML = '<h4>Risque d incendie en Afrique du Nord :</h4>' +  (props ?
+          'Pays: <b>' + props.Pays + '</b> <br />Indice d incendie : '+ props.Indice_inc 
+          : ' Merci de mettre le curseur sur un pays.');
+  };
+  
+  infoIA.update = function (props) {
+      this._div.innerHTML = '<h4>Importance du risque d aridite en Afrique du Nord :</h4>' +  (props ?
+          'Pays: <b>' + props.Pays + '</b> <br />Superficie des zones arides en hectars : '+ props.Aridite 
+          : ' Merci de mettre le curseur sur un pays.');
+  };
+  infoFF.update = function (props) {
+      this._div.innerHTML = '<h4>Importance des Feux de forets en Afrique du Nord :</h4>' +  (props ?
+          'Pays: <b>' + props.Pays + '</b> <br />Superficie des forets ravagees par des incendies : '+ props.Sup_Incendie 
+          : ' Merci de mettre le curseur sur un pays.');
+  };
+  //CDT SUR INFO
+  map.on('overlayadd', function (eventLayer) {
+      if (eventLayer.name === 'Risque d inondation') {
+          this.removeControl(infoRIC);
+          this.removeControl(infoFF);
+          this.removeControl(infoIA);
+          infoRIN.addTo(this);
+      } else if (eventLayer.name === 'Risque d incendie'){
+          this.removeControl(infoRIN);
+          this.removeControl(infoFF);
+          this.removeControl(infoIA);
+          infoRIC.addTo(this);
+      } else if (eventLayer.name === 'Risque d aridite'){
+          this.removeControl(infoRIN);
+          this.removeControl(infoFF);
+          this.removeControl(infoRIC);
+          infoIA.addTo(this);
+      } else if (eventLayer.name === 'Feux de forets'){
+          this.removeControl(infoRIN);
+          this.removeControl(infoRIC);
+          this.removeControl(infoIA);
+          infoFF.addTo(this);
+      }});
+  
+  // DECLARATION DES LAYEIS */
+    var geojsonRIN = L.geoJson(Climat_NA, {
+      style: MonstyleRIN,
+        onEachFeature: onEachFeatureRIN,
+  });
+  
+    var geojsonRIC = L.geoJson(Climat_NA, {
+      style: MonstyleRIC,
+        onEachFeature: onEachFeatureRIC,
+  });
+      var symIA = L.geoJson(Centroide_NA, {
+          style: MonstyleSymIA,
+          onEachFeature: onEachFeatureIA,       
+          pointToLayer: function(feature, ll) {
+              return L.circleMarker(ll, {
+              radius: calcRadiusIA(0.45*Number(feature.properties.Aridite))
+              });
+          },
+      });
+      var symFF = L.geoJson(Centroide_NA, {
+          style: MonstyleSymFF,
+          onEachFeature: onEachFeatureFF,
+          pointToLayer: function(feature, ll) {
+              return L.circleMarker(ll, {
+              radius: calcRadiusFF(Number(feature.properties.Sup_Incendie))
+              });
+          },
+      });
+  
+  //ECHELLE GRAPHIQUE
+  var graphicScale = L.control.graphicScale({fill:'fill',doubleLine:true}).addTo(map);
+  
+  //BASEMAPS + overlayMaps > CONTROLPANEL 
+  var basemaps = {
+      EsriWorldStreetMap: L.tileLayer.wms('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+      }),
+  
+      OpenStreetMapDE:L.tileLayer.wms('https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }),
+  
+      EsriWorldTopoMap: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+  }),
+  
+      EsriWorldImagery: L.tileLayer.wms('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+  })
+  };
+  
+  var overlayMaps = {
+      "Risque d inondation": geojsonRIN,
+       "Risque d incendie": geojsonRIC,
+       "Risque d aridite" : symIA,
+       "Feux de forets": symFF,
+      };
+  L.control.layers(basemaps, overlayMaps,{collapsed: false}).addTo(map);
+  basemaps.EsriWorldStreetMap.addTo(map);
+  // LEGENDES
+  //              LEGENDE RIN
+  var legendRIN = L.control({position: 'bottomright'});
+  
+      legendRIN.onAdd = function () {
+  
+      var div = L.DomUtil.create('div', 'infoRIN legendRIN'),
+          grades = [0,2.76,3.76,4.75];
+      div.innerHTML += '<h6>Legende :</h6>';
+      for (var i = 0; i < (grades.length-1); i++) {
+          div.innerHTML +=
+              '<div style="background-color :' + getColorRIN(grades[i]) + '"></i> ' +
+              grades[i] + (grades[i+1] ? ' _ ' + grades[i + 1] + ' <br>' :'+');
+      }
+      return div;
+  };
+  //              LEGENDE RIC
+  var legendRIC = L.control({position: 'bottomright'});
+  
+      legendRIC.onAdd = function (map) {
+  
+      var div = L.DomUtil.create('div', 'infoRIC legendRIC'),
+          grades = [0,1,2,3];
+  
+      div.innerHTML += '<h6>Legende :</h6>';
+      for (var i = 0; i < (grades.length-1); i++) {
+          div.innerHTML +=
+              '<div style="background-color :' + getColorRIC(grades[i+1]) + '"></i> ' +
+              grades[i] + (grades[i + 1] ? ' - ' + grades[i + 1] + ' <br>' :' ');
+      }    
+  
+      return div;
+  };
+  // CONDITIONS SUR LES LEGENDES 
+  
+  map.on('overlayadd', function (eventLayer) {
+      if (eventLayer.name === 'Risque d inondation') {
+          this.removeControl(legendRIC);
+          legendRIN.addTo(this);
+      } else if (eventLayer.name === 'Risque d incendie') {
+          this.removeControl(legendRIN);
+          legendRIC.addTo(this);
+      } else {
+          this.removeControl(legendRIC);
+          this.removeControl(legendRIN);  
+  }});
+  
+  </script>
+  
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/jquery/jquery.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/jquery.easing/jquery.easing.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/jquery-sticky/jquery.sticky.js"></script>
+  <script src="assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+  <script src="assets/vendor/counterup/counterup.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/owl.carousel/owl.carousel.min.js"></script>
+  <script src="assets/vendor/venobox/venobox.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

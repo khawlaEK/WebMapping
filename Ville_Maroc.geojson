@@ -1,0 +1,15 @@
+var villesincendies ={
+"type": "FeatureCollection",
+"name": "Ville_Maroc",
+"features": [
+{ "type": "Feature", "properties": { "OBJECTID": 54, "VILLES_ID": 86.0, "NOM": "OUJDA", "Prece": 0 }, "geometry": { "type": "Point", "coordinates": [ -1.914687750999974, 34.680378549000068 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 55, "VILLES_ID": 87.0, "NOM": "TETOUAN", "Prece": 0 }, "geometry": { "type": "Point", "coordinates": [ -5.371692738999968, 35.571267012000078 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 57, "VILLES_ID": 90.0, "NOM": "Nador", "Prece": 0 }, "geometry": { "type": "Point", "coordinates": [ -2.929009748999931, 35.182271299000035 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 58, "VILLES_ID": 91.0, "NOM": "Al-Hoceima", "Prece": 0 }, "geometry": { "type": "Point", "coordinates": [ -3.933149055999934, 35.241200032000052 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 59, "VILLES_ID": 93.0, "NOM": "Kenitra", "Prece": 0 }, "geometry": { "type": "Point", "coordinates": [ -6.576155528999948, 34.257302788000061 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 62, "VILLES_ID": 96.0, "NOM": "Beni Mellal", "Prece": 0 }, "geometry": { "type": "Point", "coordinates": [ -6.353629192999961, 32.336150315000054 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 78, "VILLES_ID": 111.0, "NOM": "Khemisset", "Prece": 0 }, "geometry": { "type": "Point", "coordinates": [ -6.06453841299998, 33.826200785000026 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 92, "VILLES_ID": 126.0, "NOM": "Khenifra", "Prece": 0 }, "geometry": { "type": "Point", "coordinates": [ -5.663753091999979, 32.939665478000052 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 125, "VILLES_ID": 81.0, "NOM": "TANGER", "Prece": 0 }, "geometry": { "type": "Point", "coordinates": [ -5.818219146999979, 35.781547432000025 ] } }
+]
+}

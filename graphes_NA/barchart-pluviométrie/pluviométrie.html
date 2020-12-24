@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        .bar1 {
+            fill: #1b9e77;
+        }
+        .bar2 {
+            fill: #d95f02;
+        }
+        .bar3 {
+            fill: #7570b3;
+        }
+        .bar4 {
+            fill: #e7298a;
+        }
+        .bar5 {
+            fill: #66a61e;
+        }
+    </style>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+<body>
+<svg width="600" height="500"></svg>
+<script>
+
+
+    // variables to change
+    var svg = d3.select("svg"),
+        margin = 200,
+        width = svg.attr("width") - margin,
+        height = svg.attr("height") - margin,
+        Ymin = 0,
+        Ymax = 1800,
+        chartTitle = "La distribution des précipitations en mm/année dans les pays du Nord Afrique",
+        Xlabel = "Classe de pluviométrie",
+        Ylabel = "",
+        legend_x = width - 0
+
+        // Handmade legend
+    svg.append("circle").attr("cx",legend_x).attr("cy",100).attr("r", 6).style("fill", "#1b9e77")
+    svg.append("text").attr("x", legend_x + 20).attr("y", 100).text("Maroc").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("circle").attr("cx",legend_x).attr("cy",120).attr("r", 6).style("fill", "#d95f02")
+    svg.append("text").attr("x", legend_x + 20).attr("y", 120).text("Algerie").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("circle").attr("cx",legend_x).attr("cy",140).attr("r", 6).style("fill", "#7570b3")
+    svg.append("text").attr("x", legend_x + 20).attr("y", 140).text("Tunisie").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("circle").attr("cx",legend_x).attr("cy",160).attr("r", 6).style("fill", "#e7298a")
+    svg.append("text").attr("x", legend_x + 20).attr("y", 160).text("Egypt").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("circle").attr("cx",legend_x).attr("cy",180).attr("r", 6).style("fill", "#66a61e")
+    svg.append("text").attr("x", legend_x + 20).attr("y", 180).text("Libye").style("font-size", "15px").attr("alignment-baseline","middle")
+
+    // Chart Title
+    svg.append("text")
+       .attr("transform", "translate(100,0)")
+       .attr("x", width/2)
+       .attr("y", 50)
+       .attr("text-anchor", "middle")
+       .attr("font-size", "18px")
+       .text(chartTitle)
+
+    var xScale = d3.scaleBand().range([0, width]).padding(0.4),
+        yScale = d3.scaleLinear().range([height, 0]);
+
+    var g = svg.append("g")
+               .attr("transform", "translate(" + 100 + "," + 100 + ")");
+
+    d3.csv("barchart_data.csv", function(error, data) {
+        if (error) {
+            throw error;
+        }
+
+        xScale.domain(data.map(function(d) { return d.pluvio; }));
+        yScale.domain([Ymin, Ymax]);
+
+        // X label
+        g.append("g")
+         .attr("transform", "translate(0," + height + ")")
+         .call(d3.axisBottom(xScale).tickFormat(function(d){
+           return d == "cotiere" ? "Pluviométrie Cotière" :
+                  d == "montagne" ? "Pluviométrie Montagneuse" :
+                  d == "sahara" ? "Pluviométrie saharienne" : "Pluviométrie saharienne"
+         }))
+         .append("text")
+         .attr("y", height - 270)
+         .attr("x", width - 6)
+         .attr("text-anchor", "end")
+         .attr("stroke", "black")
+         .text(Xlabel);
+
+        // Y label
+        g.append("g")
+         .call(d3.axisLeft(yScale).tickFormat(function(d){
+             return d;
+         })
+         .ticks(10))
+         .append("text")
+         .attr("transform", "rotate(-90)")
+         .attr("y", 1800)
+         .attr("dy", "-5.1em")
+         .attr("text-anchor", "end")
+         .attr("stroke", "black")
+         .text(Ylabel);
+
+        // edit bars (1)
+        g.selectAll(".bar")
+         .data(data)
+         .enter().append("rect")
+         .attr("class", "bar1")
+         .attr("x", function(d) { return xScale(d.pluvio); })
+         .attr("y", function(d) { return yScale(d.val_ma); })
+         .attr("width", function (d) { return xScale.bandwidth() * 0.2; })
+         .transition()
+         .ease(d3.easeLinear)
+         .duration(400)
+         .delay(function (d, i) {
+             return i * 50;
+         })
+         .attr("height", function(d) { return height - yScale(d.val_ma); });
+
+         // edit bars (2)
+         g.selectAll(".bar")
+          .data(data)
+          .enter().append("rect")
+          .attr("class", "bar2")
+          .attr("x", function(d) { return xScale(d.pluvio) + (xScale.bandwidth() * 0.2); })
+          .attr("y", function(d) { return yScale(d.val_al); })
+          .attr("width", function (d) { return xScale.bandwidth() * 0.2; })
+          .transition()
+          .ease(d3.easeLinear)
+          .duration(400)
+          .delay(function (d, i) {
+              return i * 50;
+          })
+          .attr("height", function(d) { return height - yScale(d.val_al); });
+
+          // edit bars (3)
+          g.selectAll(".bar")
+           .data(data)
+           .enter().append("rect")
+           .attr("class", "bar3")
+           .attr("x", function(d) { return xScale(d.pluvio) + (xScale.bandwidth() * 0.4); })
+           .attr("y", function(d) { return yScale(d.val_tu); })
+           .attr("width", function (d) { return xScale.bandwidth() * 0.2; })
+           .transition()
+           .ease(d3.easeLinear)
+           .duration(400)
+           .delay(function (d, i) {
+               return i * 50;
+           })
+           .attr("height", function(d) { return height - yScale(d.val_tu); });
+
+           // edit bars (4)
+           g.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar4")
+            .attr("x", function(d) { return xScale(d.pluvio) + (xScale.bandwidth() * 0.6); })
+            .attr("y", function(d) { return yScale(d.val_eg); })
+            .attr("width", function (d) { return xScale.bandwidth() * 0.2; })
+            .transition()
+            .ease(d3.easeLinear)
+            .duration(400)
+            .delay(function (d, i) {
+                return i * 50;
+            })
+            .attr("height", function(d) { return height - yScale(d.val_eg); });
+
+            // edit bars (5)
+            g.selectAll(".bar")
+              .data(data)
+              .enter().append("rect")
+              .attr("class", "bar5")
+              .attr("x", function(d) { return xScale(d.pluvio) + (xScale.bandwidth() * 0.8); })
+              .attr("y", function(d) { return yScale(d.val_li); })
+              .attr("width", function (d) { return xScale.bandwidth() * 0.2; })
+              .transition()
+              .ease(d3.easeLinear)
+              .duration(400)
+              .delay(function (d, i) {
+                return i * 50;
+            })
+            .attr("height", function(d) { return height - yScale(d.val_li); });
+    });
+</script>
+</body>
+</html>

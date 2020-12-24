@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Pluviométrie au Maroc</title>
+  <meta content="" name="descriptison">
+  <meta content="" name="keywords">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link href="../assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="../assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="../assets/vendor/venobox/venobox.css" rel="stylesheet">
+
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="./Qgis2threejs.css">
+  <script src="./threejs/three.min.js"></script>
+  <script src="./threejs/OrbitControls.js"></script>
+  <script src="./Qgis2threejs.js"></script>
+
+
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+  <header id="header" style="z-index: 5; position: fixed; top: 0; width: 100vw;">
+    <div class="container d-flex">
+      <div class="logo mr-auto">
+        <h1 class="text-light"><a href="index.html"><span>Pluviométrie au Maroc</span></a></h1>
+      </div>
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+            <li><a href="../maroc.html"><i class="fa fa-arrow-left"></i>  Retour</a></li>
+        </ul>
+      </nav><!-- .nav-menu -->
+    </div>
+  </header><!-- End Header -->
+
+
+  <div id="view">
+    <div id="labels"></div>
+    <div id="northarrow"></div>
+  </div>
+  
+  <!-- popup -->
+  <div id="popup">
+    <div id="closebtn">&times;</div>
+    <div id="popupbar"></div>
+    <div id="popupbody">
+      <div id="popupcontent"></div>
+  
+      <!-- query result -->
+      <div id="queryresult">
+        <table id="qr_layername_table">
+          <caption>Layer name</caption>
+          <tr><td id="qr_layername"></td></tr>
+        </table>
+  
+        <table id="qr_coords_table">
+          <caption>Clicked coordinates</caption>
+          <tr><td id="qr_coords"></td></tr>
+        </table>
+  
+        <!-- camera actions -->
+        <div class="action-btn action-zoom" onclick="app.cameraAction.zoomIn(); app.closePopup();">Zoom in here</div>
+        <div class="action-btn action-move" onclick="app.cameraAction.move(); app.closePopup();">Move here</div>
+        <div class="action-btn action-orbit" onclick="app.cameraAction.orbit(); app.closePopup();">Orbit around here</div>
+  
+        <!-- attributes -->
+        <table id="qr_attrs_table">
+          <caption>Attributes</caption>
+        </table>
+      </div>
+  
+      <!-- page info -->
+      <div id="pageinfo">
+        <h1>Current View URL</h1>
+        <div><input id="urlbox" type="text"></div>
+  
+        <h1>Usage</h1>
+        <table id="usage">
+          <tr><td colspan="2" class="star">Mouse</td></tr>
+          <tr><td>Left button + Move</td><td>Orbit</td></tr>
+          <tr><td>Mouse Wheel</td><td>Zoom</td></tr>
+          <tr><td>Right button + Move</td><td>Pan</td></tr>
+  
+          <tr><td colspan="2" class="star">Keys</td></tr>
+          <tr><td>Arrow keys</td><td>Move Horizontally</td></tr>
+          <tr><td>Shift + Arrow keys</td><td>Orbit</td></tr>
+          <tr><td>Ctrl + Arrow keys</td><td>Rotate</td></tr>
+          <tr><td>Shift + Ctrl + Up / Down</td><td>Zoom In / Out</td></tr>
+          <tr><td>L</td><td>Toggle Label Visibility</td></tr>
+          <tr><td>R</td><td>Start / Stop Rotate Animation (Orbiting)</td></tr>
+          <tr><td>W</td><td>Wireframe Mode</td></tr>
+          <tr><td>Shift + R</td><td>Reset Camera Position</td></tr>
+          <tr><td>Shift + S</td><td>Save Image</td></tr>
+        </table>
+  
+        <h1>About</h1>
+        <div id="about">
+          This page was made with <a href="https://www.qgis.org/" target="_blank">QGIS</a> and <a href="https://github.com/minorua/Qgis2threejs" target="_blank">Qgis2threejs</a> plugin.
+          Dependent JavaScript libraries are
+          <a href="https://threejs.org/" target="_blank">three.js</a>
+          <span id="lib_proj4js"> and <a href="https://trac.osgeo.org/proj4js/" target="_blank">Proj4js</a></span>
+          .
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- progress bar -->
+  <div id="progress"><div id="bar"></div></div>
+  
+  <!-- header and footer -->
+  <div id="footer"><span id="infobtn"><img src="./Qgis2threejs.png"></span> Cliquez sur une region pour afficher ses differents attributs.</div>
+  
+  <script>
+  Q3D.Config.allVisible = true;
+  Q3D.Config.localMode = true;
+  Q3D.Config.northArrow.visible = true;
+  Q3D.Config.northArrow.color = 0x6adee4;
+  if (typeof proj4 === "undefined") document.getElementById("lib_proj4js").style.display = "none";
+  
+  var app = Q3D.application,
+      container = document.getElementById("view");
+  
+  app.init(container);           // initialize application
+  
+  // load the scene
+  app.loadSceneFile("./data/index/scene.js", function () {
+    app.start();
+  
+    // North arrow inset
+    if (Q3D.Config.northArrow.visible) app.buildNorthArrow(document.getElementById("northarrow"), app.scene.userData.rotation);
+  });
+  
+  document.getElementById("infobtn").onclick = app.showInfo.bind(app);
+  </script>
+
+  
+  <!-- Vendor JS Files -->
+  <script src="../assets/vendor/jquery/jquery.min.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/jquery.easing/jquery.easing.min.js"></script>
+  <script src="../assets/vendor/php-email-form/validate.js"></script>
+  <script src="../assets/vendor/jquery-sticky/jquery.sticky.js"></script>
+  <script src="../assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+  <script src="../assets/vendor/counterup/counterup.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/owl.carousel/owl.carousel.min.js"></script>
+  <script src="../assets/vendor/venobox/venobox.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="../assets/js/main.js"></script>
+
+</body>
+
+</html>
